@@ -18,6 +18,11 @@ class PokemonController: UICollectionViewController {
         super.viewDidLoad()
         
         configurationViewController()
+        fetchPokemon()
+    }
+    
+    func fetchPokemon() {
+        Servise.shared.fetchPokemon()
     }
     
     private func configurationViewController() {
