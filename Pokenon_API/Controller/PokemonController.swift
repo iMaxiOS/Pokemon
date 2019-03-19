@@ -10,6 +10,8 @@ import UIKit
 
 class PokemonController: UICollectionViewController {
     
+    var pokemon = [Pokemon]()
+    
     struct Storyborad {
         static let pokemonCell = "PokemonCell"
     }
@@ -22,7 +24,12 @@ class PokemonController: UICollectionViewController {
     }
     
     func fetchPokemon() {
-        Servise.shared.fetchPokemon()
+        Servise.shared.fetchPokemon { (pokemon) in
+            DispatchQueue.main.async {
+                self.pokemon = pokemon
+                self.collectionView.reloadData()
+            }
+        }
     }
     
     private func configurationViewController() {
@@ -47,14 +54,14 @@ class PokemonController: UICollectionViewController {
 extension PokemonController {
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 100
+        return pokemon.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Storyborad.pokemonCell, for: indexPath) as! PokemonCell
         
-        cell.backgroundColor = .blue
+        cell.pokemon = pokemon[indexPath.item]
         
         return cell
         

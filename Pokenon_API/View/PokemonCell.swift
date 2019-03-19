@@ -10,6 +10,13 @@ import UIKit
 
 class PokemonCell: UICollectionViewCell {
     
+    var pokemon: Pokemon? {
+        didSet {
+            nameLabel.text = pokemon?.name
+            imageView.image = pokemon?.image
+        }
+    }
+    
     let imageView: UIImageView = {
         let image = UIImageView()
         image.backgroundColor = .groupTableViewBackground
@@ -50,9 +57,9 @@ class PokemonCell: UICollectionViewCell {
         addSubview(containerView)
         addSubview(imageView)
         
-        imageView.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: self.frame.height - 32)
+        imageView.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: self.frame.height - 25)
         
-        containerView.anchor(top: nil, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 32)
+        containerView.anchor(top: nil, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 25)
 
     }
     
