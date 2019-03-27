@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		AC48B8CC22401E6200C4F7BE /* Servise.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC48B8CB22401E6200C4F7BE /* Servise.swift */; };
+		ACA7615F224BF794008F4BB4 /* InfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA7615E224BF794008F4BB4 /* InfoView.swift */; };
 		ACE6C4AA223E4B4D00FCF85C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACE6C4A9223E4B4D00FCF85C /* AppDelegate.swift */; };
 		ACE6C4AF223E4B4D00FCF85C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ACE6C4AD223E4B4D00FCF85C /* Main.storyboard */; };
 		ACE6C4B1223E4B4E00FCF85C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ACE6C4B0223E4B4E00FCF85C /* Assets.xcassets */; };
@@ -20,6 +21,7 @@
 
 /* Begin PBXFileReference section */
 		AC48B8CB22401E6200C4F7BE /* Servise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Servise.swift; sourceTree = "<group>"; };
+		ACA7615E224BF794008F4BB4 /* InfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoView.swift; sourceTree = "<group>"; };
 		ACE6C4A6223E4B4D00FCF85C /* Pokenon_API.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pokenon_API.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ACE6C4A9223E4B4D00FCF85C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		ACE6C4AE223E4B4D00FCF85C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -85,6 +87,7 @@
 			isa = PBXGroup;
 			children = (
 				ACE6C4C4223E5A9B00FCF85C /* PokemonCell.swift */,
+				ACA7615E224BF794008F4BB4 /* InfoView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -193,6 +196,7 @@
 				AC48B8CC22401E6200C4F7BE /* Servise.swift in Sources */,
 				ACE6C4AA223E4B4D00FCF85C /* AppDelegate.swift in Sources */,
 				ACE6C4C1223E4CB600FCF85C /* PokemonController.swift in Sources */,
+				ACA7615F224BF794008F4BB4 /* InfoView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

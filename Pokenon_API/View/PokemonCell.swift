@@ -20,7 +20,7 @@ class PokemonCell: UICollectionViewCell {
     let imageView: UIImageView = {
         let image = UIImageView()
         image.backgroundColor = .groupTableViewBackground
-        image.contentMode = .scaleAspectFill
+        image.contentMode = .scaleAspectFit
         image.translatesAutoresizingMaskIntoConstraints = false
         return image
     }()
@@ -60,7 +60,15 @@ class PokemonCell: UICollectionViewCell {
         imageView.anchor(top: topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: self.frame.height - 25)
         
         containerView.anchor(top: nil, left: leftAnchor, bottom: bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 25)
-
+        
+        let longGestureRecognized = UILongPressGestureRecognizer(target: self, action: #selector(handleGesture))
+        self.addGestureRecognizer(longGestureRecognized)
+    }
+    
+    @objc fileprivate func handleGesture(sender: UILongPressGestureRecognizer) {
+        if sender.state == .began {
+            print("begin long gesture...")
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
