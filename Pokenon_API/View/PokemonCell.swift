@@ -8,7 +8,13 @@
 
 import UIKit
 
+protocol PokemonCellDelegate {
+    func presentInfoView(pokemon: Pokemon)
+}
+
 class PokemonCell: UICollectionViewCell {
+    
+    var delegate: PokemonCellDelegate?
     
     var pokemon: Pokemon? {
         didSet {
@@ -67,7 +73,8 @@ class PokemonCell: UICollectionViewCell {
     
     @objc fileprivate func handleGesture(sender: UILongPressGestureRecognizer) {
         if sender.state == .began {
-            print("begin long gesture...")
+            guard let pokemon = self.pokemon else { return }
+            delegate?.presentInfoView(pokemon: pokemon)
         }
     }
     

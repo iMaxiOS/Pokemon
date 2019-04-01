@@ -18,6 +18,12 @@ class PokemonController: UICollectionViewController {
         return view
     }()
     
+    let visualEffect: UIVisualEffectView = {
+        let blur = UIBlurEffect(style: .dark)
+        let visual = UIVisualEffectView(effect: blur)
+        return visual
+    }()
+    
     struct Storyborad {
         static let pokemonCell = "PokemonCell"
     }
@@ -38,6 +44,16 @@ class PokemonController: UICollectionViewController {
         }
     }
     
+    private func dismissInfoView(pokemon: Pokemon?) {
+        UIView.animate(withDuration: 0.5, animations: {
+            self.visualEffect.alpha = 0
+            self.infoView.alpha = 0
+            self.infoView.transform = CGAffineTransform(scaleX: 0.2, y: 0.2)
+        }) { (_) in
+            self.infoView.removeFromSuperview()
+        }
+    }
+    
     private func configurationViewController() {
         collectionView.backgroundColor = .white
         
@@ -51,14 +67,16 @@ class PokemonController: UICollectionViewController {
         
         collectionView.register(PokemonCell.self, forCellWithReuseIdentifier: Storyborad.pokemonCell)
         
-        view.addSubview(infoView)
-        infoView.anchor(top: nil, left: nil, bottom: nil, right: nil, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: view.frame.width - 64, height: 500)
-        infoView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        infoView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(handleInfoView))
+        visualEffect.addGestureRecognizer(gesture)
     }
     
     @objc private func searchHandle() {
         print("Pokemon")
+    }
+    
+    @objc private func handleInfoView() {
+        dismissInfoView(pokemon: nil)
     }
 }
 
@@ -73,7 +91,7 @@ extension PokemonController {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Storyborad.pokemonCell, for: indexPath) as! PokemonCell
         
         cell.pokemon = pokemon[indexPath.item]
-        
+        cell.delegate = self
         return cell
         
     }
@@ -89,5 +107,36 @@ extension PokemonController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 32, left: 8, bottom: 8, right: 8)
+    }
+}
+
+extension PokemonController: PokemonCellDelegate {
+    
+    func presentInfoView(pokemon: Pokemon) {
+        
+        view.addSubview(visualEffect)
+        visualEffect.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
+    
+        view.addSubview(infoView)
+        infoView.anchor(top: nil, left: nil, bottom: nil, right: nil, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: view.frame.width - 64, height: 500)
+        infoView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        infoView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        
+        infoView.transform = CGAffineTransform(scaleX: 0.2, y: 0.2)
+        infoView.alpha = 0
+        infoView.delegate = self
+        infoView.pokemon = pokemon
+        
+        UIView.animate(withDuration: 0.5) {
+            self.visualEffect.alpha = 1
+            self.infoView.alpha = 1
+            self.infoView.transform = .identity
+        }
+    }
+}
+
+extension PokemonController: InfoViewDelegate {
+    func dismissPokemon(pokemon: Pokemon?) {
+        dismissInfoView(pokemon: pokemon)
     }
 }

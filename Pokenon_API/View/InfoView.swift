@@ -8,7 +8,35 @@
 
 import UIKit
 
+protocol InfoViewDelegate {
+    func dismissPokemon(pokemon: Pokemon?)
+}
+
 class InfoView: UIView {
+    
+    var delegate: InfoViewDelegate?
+    
+    var pokemon: Pokemon? {
+        didSet {
+            guard let pokemon = pokemon else { return }
+            guard let id = pokemon.id else { return }
+            guard let type = pokemon.type else { return }
+            guard let weight = pokemon.weight else { return }
+            guard let attack = pokemon.attack else { return }
+            guard let defense = pokemon.defense else { return }
+            guard let height = pokemon.height else { return }
+            
+            photoImageView.image = pokemon.image
+            nameLabel.text = pokemon.name
+            
+            configureLabel(label: pokemonLabel, title: "Pokemon Id", details: "\(id)")
+            configureLabel(label: typeLabel, title: "Type", details: type)
+            configureLabel(label: wightLabel, title: "Weight", details: "\(weight)")
+            configureLabel(label: attackLabel, title: "Attack", details: "\(attack)")
+            configureLabel(label: defenseLabel, title: "Defense", details: "\(defense)")
+            configureLabel(label: heightLabel, title: "Height", details: "\(height)")
+        }
+    }
     
     let nameLabel: UILabel = {
         let label = UILabel()
@@ -75,10 +103,15 @@ class InfoView: UIView {
         return label
     }()
     
+    let separatorView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .groupTableViewBackground
+        return view
+    }()
+    
     let photoImageView: UIImageView = {
         let image = UIImageView()
         image.contentMode = .scaleAspectFit
-        image.backgroundColor = .yellow
         return image
     }()
     
@@ -97,6 +130,12 @@ class InfoView: UIView {
         super.init(frame: frame)
         
         configureUIView()
+    }
+    
+    func configureLabel(label: UILabel, title: String, details: String) {
+        let attriburedText = NSMutableAttributedString(attributedString: NSAttributedString(string: "\(title):  ", attributes: [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 16), NSAttributedString.Key.foregroundColor: UIColor.mainPink()]))
+        attriburedText.append(NSAttributedString(string: "\(details)", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16), NSAttributedString.Key.foregroundColor: UIColor.gray]))
+        label.attributedText = attriburedText
     }
   
     fileprivate func configureUIView() {
@@ -117,8 +156,6 @@ class InfoView: UIView {
         addSubview(defenseLabel)
         defenseLabel.anchor(top: photoImageView.bottomAnchor, left: nil, bottom: nil, right: rightAnchor, paddingTop: 16, paddingLeft: 0, paddingBottom: 0, paddingRight: -8, width: 0, height: 0)
         
-        let separatorView = UIView()
-        separatorView.backgroundColor = .groupTableViewBackground
         addSubview(separatorView)
         separatorView.anchor(top: typeLabel.bottomAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 8, paddingLeft: 4, paddingBottom: 0, paddingRight: -4, width: 0, height: 1)
         
@@ -139,7 +176,7 @@ class InfoView: UIView {
     }
     
     @objc fileprivate func handleTapButton() {
-        print("tap button")
+        delegate?.dismissPokemon(pokemon: pokemon)
     }
     
     required init?(coder aDecoder: NSCoder) {
