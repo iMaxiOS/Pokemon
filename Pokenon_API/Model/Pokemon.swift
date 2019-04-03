@@ -27,7 +27,7 @@ class Pokemon {
         self.id = id
         
         if let name = dictinary["name"] as? String {
-            self.name = name.capitalized
+            self.name = name
         }
         
         if let imageUrl = dictinary["imageUrl"] as? String {

@@ -27,7 +27,7 @@ class InfoView: UIView {
             guard let height = pokemon.height else { return }
             
             photoImageView.image = pokemon.image
-            nameLabel.text = pokemon.name
+            nameLabel.text = pokemon.name?.capitalized
             
             configureLabel(label: pokemonLabel, title: "Pokemon Id", details: "\(id)")
             configureLabel(label: typeLabel, title: "Type", details: type)

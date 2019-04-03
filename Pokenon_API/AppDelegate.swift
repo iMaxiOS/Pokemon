@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let layout = UICollectionViewFlowLayout()
         let navigationController = UINavigationController(rootViewController: PokemonController(collectionViewLayout: layout))
-    
+        window?.backgroundColor = .white
         window?.rootViewController = navigationController
         
         return true

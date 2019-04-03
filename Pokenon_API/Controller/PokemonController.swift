@@ -11,6 +11,9 @@ import UIKit
 class PokemonController: UICollectionViewController {
     
     var pokemon = [Pokemon]()
+    var filterPokemon = [Pokemon]()
+    var inSearchMode = false
+    var searchBar: UISearchBar!
     
     let infoView: InfoView = {
         let view = InfoView()
@@ -30,12 +33,28 @@ class PokemonController: UICollectionViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+//        navigationController?.navigationBar.prefersLargeTitles = true
+//        navigationItem.searchController = UISearchController(searchResultsController: nil)
+//        navigationController?.navigationBar.isTranslucent = false
         configurationViewController()
         fetchPokemon()
     }
     
-    func fetchPokemon() {
+    private func configureSearchBar() {
+        searchBar = UISearchBar()
+        searchBar.placeholder = " search Pokemon"
+        searchBar.delegate = self
+        searchBar.sizeToFit()
+        searchBar.showsCancelButton = true
+        searchBar.becomeFirstResponder()
+        searchBar.tintColor = .white
+        searchBar.layoutIfNeeded()
+
+        navigationItem.rightBarButtonItem = nil
+        navigationItem.titleView = searchBar
+    }
+    
+    private func fetchPokemon() {
         Servise.shared.fetchPokemon { (pokemon) in
             DispatchQueue.main.async {
                 self.pokemon = pokemon
@@ -72,7 +91,7 @@ class PokemonController: UICollectionViewController {
     }
     
     @objc private func searchHandle() {
-        print("Pokemon")
+        configureSearchBar()
     }
     
     @objc private func handleInfoView() {
@@ -83,19 +102,47 @@ class PokemonController: UICollectionViewController {
 extension PokemonController {
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return pokemon.count
+        return inSearchMode ? filterPokemon.count : pokemon.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Storyborad.pokemonCell, for: indexPath) as! PokemonCell
         
-        cell.pokemon = pokemon[indexPath.item]
+        cell.pokemon = inSearchMode ? filterPokemon[indexPath.row] : pokemon[indexPath.row]
         cell.delegate = self
         return cell
-        
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let infoController = PokemonInfoController()
+        navigationController?.pushViewController(infoController, animated: true)
     }
 }
+
+extension PokemonController: UISearchBarDelegate {
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        navigationItem.titleView = nil
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(searchHandle))
+        navigationItem.rightBarButtonItem?.tintColor = .white
+        inSearchMode = false
+        collectionView.reloadData()
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText == "" || searchBar.text == nil {
+            inSearchMode = false
+            collectionView.reloadData()
+            view.endEditing(true)
+        } else {
+            inSearchMode = true
+            filterPokemon = pokemon.filter{( $0.name?.range(of: searchText.lowercased()) != nil)}
+            collectionView.reloadData()
+        }
+    }
+}
+
 
 extension PokemonController: UICollectionViewDelegateFlowLayout {
     
