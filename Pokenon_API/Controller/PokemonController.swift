@@ -33,9 +33,6 @@ class PokemonController: UICollectionViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        navigationController?.navigationBar.prefersLargeTitles = true
-//        navigationItem.searchController = UISearchController(searchResultsController: nil)
-//        navigationController?.navigationBar.isTranslucent = false
         configurationViewController()
         fetchPokemon()
     }
@@ -115,7 +112,9 @@ extension PokemonController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
         let infoController = PokemonInfoController()
+        infoController.pokemon = inSearchMode ? filterPokemon[indexPath.row] : pokemon[indexPath.row]
         navigationController?.pushViewController(infoController, animated: true)
     }
 }
@@ -165,6 +164,7 @@ extension PokemonController: PokemonCellDelegate {
         visualEffect.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
     
         view.addSubview(infoView)
+        infoView.configureUIView()
         infoView.anchor(top: nil, left: nil, bottom: nil, right: nil, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: view.frame.width - 64, height: 500)
         infoView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         infoView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
