@@ -8,8 +8,31 @@
 
 import UIKit
 
-class Pokemon {
+struct EvolutionChain {
+    var evolutionArray: [[String: AnyObject]]?
+    var evolutionAds = [Int]()
     
+    init(evolutionArray: [[String: AnyObject]]) {
+        self.evolutionArray = evolutionArray
+        self.evolutionAds = setEvolutionIds()
+    }
+    
+    func setEvolutionIds() -> [Int] {
+        var result = [Int]()
+        
+        evolutionArray?.forEach({ (dictinary) in
+            if let isString = dictinary["id"] as? String {
+                guard let id = Int(isString) else { return }
+                if id <= 151 {
+                    result.append(id)
+                }
+            }
+        })
+        return result
+    }
+}
+
+class Pokemon {
     var name: String?
     var imageUrl: String?
     var image: UIImage?
@@ -21,6 +44,8 @@ class Pokemon {
     var description: String?
     var type: String?
     var baseExperience: Int?
+    var evolutionChain: [[String: AnyObject]]?
+    var evoArrray = [Pokemon]()
     
     init(id: Int, dictinary: [String: AnyObject]) {
         
@@ -56,6 +81,10 @@ class Pokemon {
         
         if let type = dictinary["type"] as? String {
             self.type = type.capitalized
+        }
+        
+        if let evolutionChain = dictinary["evolutionChain"] as? [[String: AnyObject]] {
+            self.evolutionChain = evolutionChain
         }
     }
 }

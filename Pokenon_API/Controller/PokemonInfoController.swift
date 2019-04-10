@@ -66,6 +66,15 @@ class PokemonInfoController: UIViewController {
             secondImageView.image = pokemon?.image
             infoLabel.text = pokemon?.description
             infoView.pokemon = pokemon
+            
+            if let evoArray = pokemon?.evoArrray {
+                if evoArray.count > 1 {
+                    firstImageView.image = evoArray[0].image
+                    secondImageView.image = evoArray[1].image
+                } else {
+                    firstImageView.image = evoArray[0].image
+                }
+            }
         }
     }
     

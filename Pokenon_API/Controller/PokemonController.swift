@@ -37,18 +37,32 @@ class PokemonController: UICollectionViewController {
         fetchPokemon()
     }
     
-    private func configureSearchBar() {
-        searchBar = UISearchBar()
-        searchBar.placeholder = " search Pokemon"
-        searchBar.delegate = self
-        searchBar.sizeToFit()
-        searchBar.showsCancelButton = true
-        searchBar.becomeFirstResponder()
-        searchBar.tintColor = .white
-        searchBar.layoutIfNeeded()
-
-        navigationItem.rightBarButtonItem = nil
-        navigationItem.titleView = searchBar
+    private func showPokemonInfoViewController(pokemon: Pokemon) {
+        let controller = PokemonInfoController()
+        controller.pokemon = pokemon
+        self.navigationController?.pushViewController(controller, animated: true)
+    }
+    
+    private func configureSearchBar(isShow: Bool) {
+        if isShow {
+            searchBar = UISearchBar()
+            searchBar.placeholder = " search Pokemon"
+            searchBar.delegate = self
+            searchBar.sizeToFit()
+            searchBar.showsCancelButton = true
+            searchBar.becomeFirstResponder()
+            searchBar.tintColor = .white
+            searchBar.layoutIfNeeded()
+            
+            navigationItem.rightBarButtonItem = nil
+            navigationItem.titleView = searchBar
+        } else {
+            navigationItem.titleView = nil
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(searchHandle))
+            navigationItem.rightBarButtonItem?.tintColor = .white
+            inSearchMode = false
+            collectionView.reloadData()
+        }
     }
     
     private func fetchPokemon() {
@@ -67,6 +81,9 @@ class PokemonController: UICollectionViewController {
             self.infoView.transform = CGAffineTransform(scaleX: 0.2, y: 0.2)
         }) { (_) in
             self.infoView.removeFromSuperview()
+            self.navigationItem.rightBarButtonItem?.isEnabled = true
+            guard let pokemon = pokemon else { return }
+            self.showPokemonInfoViewController(pokemon: pokemon)
         }
     }
     
@@ -88,7 +105,7 @@ class PokemonController: UICollectionViewController {
     }
     
     @objc private func searchHandle() {
-        configureSearchBar()
+        configureSearchBar(isShow: true)
     }
     
     @objc private func handleInfoView() {
@@ -112,21 +129,29 @@ extension PokemonController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let poke = inSearchMode ? filterPokemon[indexPath.row] : pokemon[indexPath.row]
         
-        let infoController = PokemonInfoController()
-        infoController.pokemon = inSearchMode ? filterPokemon[indexPath.row] : pokemon[indexPath.row]
-        navigationController?.pushViewController(infoController, animated: true)
+        var evolutionArray = [Pokemon]()
+
+        if let evoChain = poke.evolutionChain {
+            let evoPokemon = EvolutionChain(evolutionArray: evoChain)
+            let evoId = evoPokemon.evolutionAds
+            
+            evoId.forEach { (id) in
+                evolutionArray.append(pokemon[id - 1])
+            }
+            poke.evoArrray = evolutionArray
+        }
+
+        showPokemonInfoViewController(pokemon: poke)
+        
     }
 }
 
 extension PokemonController: UISearchBarDelegate {
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        navigationItem.titleView = nil
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(searchHandle))
-        navigationItem.rightBarButtonItem?.tintColor = .white
-        inSearchMode = false
-        collectionView.reloadData()
+        configureSearchBar(isShow: false)
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
@@ -159,6 +184,9 @@ extension PokemonController: UICollectionViewDelegateFlowLayout {
 extension PokemonController: PokemonCellDelegate {
     
     func presentInfoView(pokemon: Pokemon) {
+        
+        configureSearchBar(isShow: false)
+        navigationItem.rightBarButtonItem?.isEnabled = false
         
         view.addSubview(visualEffect)
         visualEffect.anchor(top: view.topAnchor, left: view.leftAnchor, bottom: view.bottomAnchor, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: 0, height: 0)
